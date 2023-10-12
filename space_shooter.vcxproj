@@ -136,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="sdl_wrappers.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="SDL2-2.28.4\lib\x64\SDL2.dll">
