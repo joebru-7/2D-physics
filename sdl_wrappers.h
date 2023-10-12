@@ -1,6 +1,9 @@
 #pragma once
+
 #include "sdl.h"
 #include<utility>
+#include "Point.h"
+
 struct SDL_context
 {
 	int errorcode;
@@ -141,15 +144,29 @@ struct Renderer
 		return SDL_RenderClear(_renderer);
 	}
 
-	int Drawpoint(int x,int y)
+	int DrawPoint(int x,int y)
 	{
 		return SDL_RenderDrawPoint(_renderer,x, y);
 	}
 
-	template <typename T>
-	int Draw(T&)
+	int DrawPoint(float x, float y)
 	{
-		T.Draw(*this);
+		return SDL_RenderDrawPointF(_renderer, x, y);
+	}
+
+	int DrawLines(const FPoint* points, int count)
+	{
+		return SDL_RenderDrawLinesF(_renderer, points, count);
+	}	
+	int DrawLines(const Point* points, int count)
+	{
+		return SDL_RenderDrawLines(_renderer, points, count);
+	}
+
+	template <typename T>
+	int Draw(T& obj)
+	{
+		return obj.Draw(*this);
 	}
 
 };
