@@ -18,4 +18,5 @@ int Asteroid::Draw(Renderer& rend)
 void Asteroid::Update(float deltatime)
 {
 	pos += velocity * deltatime;
+	rotationAngle += AngularVelocity * deltatime;
 }

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <random>
+#include <execution>
 
 #include "sdl_wrappers.h"
 #include "player.h"
@@ -37,8 +38,18 @@ int main(int argc, char* argv[])
 		std::uniform_int_distribution  heightDistribution{ 0,height };
 		std::uniform_int_distribution  widhtDistribution { 0,width };
 		std::uniform_real_distribution angleDistribution{ 0.0,6.28 };
-		std::uniform_real_distribution speedDistribution { 0.0,6.28 };
+		std::uniform_real_distribution speedDistribution { 1.f,20.f };
 
+
+
+		for (size_t i = 0; i < 10000; i++)
+		{
+			asteroids.emplace_back(
+				FPoint{ (float)widhtDistribution(en),(float)heightDistribution(en) },
+				FromAngle(angleDistribution(en), speedDistribution(en)),
+				angleDistribution(en), speedDistribution(en) * (heightDistribution(en) % 2 == 0 ? 1 : -1)
+			);
+		}
 
 		while (true)
 		{
@@ -85,11 +96,6 @@ int main(int argc, char* argv[])
 
 			renderer.SetDrawColor(Color::black);
 			renderer.Clear();
-			asteroids.emplace_back(
-				FPoint{ (float)widhtDistribution(en),(float)heightDistribution(en) },
-				FromAngle(angleDistribution(en), speedDistribution(en)),
-				angleDistribution(en)
-				);
 
 			renderer.SetDrawColor(Color::blue);
 			for (auto& asteroid : asteroids)
@@ -99,7 +105,6 @@ int main(int argc, char* argv[])
 			}
 
 			player.Update(deltatime);
-
 
 			renderer.SetDrawColor(Color::red);
 			renderer.Draw(player);
