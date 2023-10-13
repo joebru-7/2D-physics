@@ -64,6 +64,14 @@ struct Window
 		_window = std::exchange(other._window, nullptr);
 		return *this;
 	}
+
+	auto getWidthandHeight()
+	{
+		int widht, height;
+		SDL_GetWindowSize(_window, &widht, &height);
+		return Point{ widht,height };
+	}
+
 	~Window()
 	{
 		SDL_DestroyWindow(_window);
@@ -77,16 +85,16 @@ struct Window
 
 constexpr uint32_t computePackedColorValue(Uint8 r, Uint8 g, Uint8 b)
 {
-	return r << 3 | g << 2 | b << 1;
+	return r << 16 | g << 8 | b << 0;
 }
 
 enum class Color : uint32_t
 {
 	black = 0,
 	white = computePackedColorValue(255, 255, 255),
-	red = 255 << 3,
-	green = 255 << 2,
-	blue = 255 << 1
+	red = 255 << 16,
+	green = 255 << 8,
+	blue = 255 << 0
 
 };
 
@@ -133,9 +141,9 @@ struct Renderer
 	int SetDrawColor(Color color, Uint8 a = 255)
 	{
 
-		Uint8 r = ((int)color >> 3) & 255;
-		Uint8 g = ((int)color >> 2) & 255;
-		Uint8 b = ((int)color >> 1) & 255;
+		Uint8 r = (((uint32_t)color) >> 16) & (uint32_t)255;
+		Uint8 g = (((uint32_t)color) >> 8) & (uint32_t)255;
+		Uint8 b = (((uint32_t)color) >> 0) & (uint32_t)255;
 		return SDL_SetRenderDrawColor(_renderer, r, g, b, a);
 	}
 

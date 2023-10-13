@@ -1,7 +1,6 @@
 #pragma once
 #include "Point.h"
-
-struct Renderer;
+#include "sdl_wrappers.h"
 
 class Player
 {
@@ -12,7 +11,7 @@ public:
 	float rotationAngle{ 0 };
 	FPoint graphics[5] = { {0,-10},{-10,10}, {0,5}, {10,10},{0,-10} };
 
-	float accelerationForce = 1;
+	float accelerationForce = 10;
 
 	bool isAccelerating = false;
 

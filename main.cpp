@@ -1,8 +1,10 @@
 #include <iostream>
+#include <vector>
+#include <random>
 
 #include "sdl_wrappers.h"
 #include "player.h"
-
+#include "Asteroid.h"
 
 int main(int argc, char* argv[])
 {
@@ -17,6 +19,8 @@ int main(int argc, char* argv[])
 
 		Window window{};
 
+		auto [width, height] = window.getWidthandHeight();
+
 		Renderer renderer{ window };
 		//SDL_Texture* tex = SDL_CreateTexture(renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGB888);
 
@@ -24,20 +28,31 @@ int main(int argc, char* argv[])
 
 		Uint64 now = SDL_GetPerformanceCounter(), last = SDL_GetPerformanceCounter();
 		float ticsPerSec = SDL_GetPerformanceFrequency();
+
+		std::vector<Asteroid> asteroids{};
+
+		std::random_device rd;
+		std::default_random_engine en(rd());
+
+		std::uniform_int_distribution  heightDistribution{ 0,height };
+		std::uniform_int_distribution  widhtDistribution { 0,width };
+		std::uniform_real_distribution angleDistribution{ 0.0,6.28 };
+		std::uniform_real_distribution speedDistribution { 0.0,6.28 };
+
+
 		while (true)
 		{
-			//TODO framerate
-			last = now;
-			now = SDL_GetPerformanceCounter();
+			last = std::exchange(now, SDL_GetPerformanceCounter());
 
-			float deltatime = (now-last)/ ticsPerSec;
-			//std::cout << deltatime << '\n';
+			float deltatime = (now - last) / ticsPerSec;
+			std::cout << deltatime * 1000 << "\tms\t" << 1 / deltatime << "\tfps\t "<< asteroids.size() << " asteroids" << '\n';
 
 			SDL_Event my_event;
 			while (SDL_PollEvent(&my_event))
 			{
 				switch (my_event.type)
 				{
+				case SDL_KEYUP:
 				case SDL_KEYDOWN:
 					//std::cout << "pressed " << SDL_GetKeyName(my_event.key.keysym.sym) << '\n';
 					switch (my_event.key.keysym.scancode)
@@ -68,13 +83,26 @@ int main(int argc, char* argv[])
 				}
 			}
 
-			player.Update(deltatime);
-
 			renderer.SetDrawColor(Color::black);
 			renderer.Clear();
+			asteroids.emplace_back(
+				FPoint{ (float)widhtDistribution(en),(float)heightDistribution(en) },
+				FromAngle(angleDistribution(en), speedDistribution(en)),
+				angleDistribution(en)
+				);
+
+			renderer.SetDrawColor(Color::blue);
+			for (auto& asteroid : asteroids)
+			{
+				asteroid.Update(deltatime);
+				asteroid.Draw(renderer);
+			}
+
+			player.Update(deltatime);
+
+
 			renderer.SetDrawColor(Color::red);
 			renderer.Draw(player);
-
 
 			renderer.Preset();
 		}
