@@ -9,7 +9,8 @@ public:
 	FPoint velocity{ 0,0 }; //px/s
 	float rotationAngle{ 0 };//rad
 	float AngularVelocity{0};//rad/s
-	FPoint graphics[8] = { {-8,-10},{-10,8},{-7,10},{10,10},{10,6},{2,6},{-4,-2},{-8,-10} };
+	const FPoint graphics[8] = { {-8,-10},{-10,8},{-7,10},{10,10},{10,6},{2,6},{-4,-2},{-8,-10} };
+	FPoint worldpoints[8] = {};
 	
 public:
 	Asteroid() = default;

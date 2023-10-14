@@ -4,23 +4,22 @@
 int Player::Draw(Renderer& rend)
 {
 	constexpr int count = std::size(Player{}.graphics);
-	auto matrix = FMatrix(rotationAngle, pos);
-
-	FPoint data[count]{};
-
-	for (int i = 0; i < std::size(data);  i++)
-	{
-		data[i] = matrix * graphics[i];
-	}
-
-	return rend.DrawLines(data, count);
+	return rend.DrawLines(worldpoints, count);
 }
 
 void Player::Update(float deltatime)
 {
-	if(isAccelerating)
+	if (isAccelerating)
 		velocity += FromAngle(rotationAngle, accelerationForce * deltatime);
 	pos += velocity * deltatime;
+
+	constexpr int count = std::size(Player{}.graphics);
+	auto matrix = FMatrix(rotationAngle, pos);
+
+	for (int i = 0; i < count; i++)
+	{
+		worldpoints[i] = matrix * graphics[i];
+	}
 }
 
 void Player::setAccelerating(bool b)

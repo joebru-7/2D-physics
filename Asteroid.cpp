@@ -2,21 +2,19 @@
 
 int Asteroid::Draw(Renderer& rend)
 {
-	constexpr int count = std::size(Asteroid{}.graphics);
-	auto matrix = FMatrix(rotationAngle, pos);
-
-	FPoint data[count]{};
-
-	for (int i = 0; i < std::size(data); i++)
-	{
-		data[i] = matrix * graphics[i];
-	}
-
-	return rend.DrawLines(data, count);
+	constexpr int count = std::size(Asteroid{}.worldpoints);
+	return rend.DrawLines(worldpoints, count);
 }
 
 void Asteroid::Update(float deltatime)
 {
+	constexpr int count = std::size(Asteroid{}.worldpoints);
 	pos += velocity * deltatime;
 	rotationAngle += AngularVelocity * deltatime;
+
+	auto matrix = FMatrix(rotationAngle, pos);
+	for (int i = 0; i < count; i++)
+	{
+		worldpoints[i] = matrix * graphics[i];
+	}
 }
