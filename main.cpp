@@ -7,6 +7,8 @@
 #include "player.h"
 #include "Asteroid.h"
 
+
+
 int main(int argc, char* argv[])
 {
 	std::ios::sync_with_stdio(false);
@@ -41,12 +43,14 @@ int main(int argc, char* argv[])
 	std::uniform_real_distribution angleDistribution{ 0.0,6.28 };
 	std::uniform_real_distribution speedDistribution { 1.f,20.f };
 
-	for (size_t i = 0; i < 500; i++)
+	for (size_t i = 0; i < 1; i++)
 	{
+		//TODO Make factory
 		asteroids.push_back(Asteroid(
 			FPoint{ (float)widhtDistribution(en),(float)heightDistribution(en) },
-			FromAngle(angleDistribution(en), speedDistribution(en)),
-			angleDistribution(en), speedDistribution(en) * (heightDistribution(en) % 2 == 0 ? 1 : -1)
+			{0,0},//FromAngle(angleDistribution(en), speedDistribution(en)),
+			0,//angleDistribution(en), 
+			0//speedDistribution(en) * (heightDistribution(en) % 2 == 0 ? 1 : -1)
 		));
 	}
 
@@ -100,16 +104,20 @@ int main(int argc, char* argv[])
 		renderer.SetDrawColor(Color::black);
 		renderer.Clear();
 
+		player.Update(deltatime);
+		bool playerIntersectsAsteroid = false;
+
 		renderer.SetDrawColor(Color::blue);
 		for (auto& asteroid : asteroids)
 		{
 			asteroid.Update(deltatime);
 			asteroid.Draw(renderer);
+			playerIntersectsAsteroid |= player.collides(asteroid);
 		}
 
-		player.Update(deltatime);
 
-		renderer.SetDrawColor(Color::red);
+
+		renderer.SetDrawColor(playerIntersectsAsteroid ? Color::red : Color::green);
 		renderer.Draw(player);
 
 		renderer.Preset();
