@@ -1,14 +1,11 @@
 #include "Asteroid.h"
 
-int Asteroid::Draw(Renderer& rend)
-{
-	constexpr int count = std::size(Asteroid{}.worldpoints);
-	return rend.DrawLines(worldpoints, count);
-}
+const FPoint Asteroid::graphics[8] = {{-8,-10},{-10,8},{-7,10},{10,10},{10,6},{2,6},{-4,-2},{-8,-10}};
+
 
 void Asteroid::Update(float deltatime)
 {
-	constexpr int count = std::size(Asteroid{}.worldpoints);
+	constexpr int count = 8; //std::size(Asteroid{}.worldpoints);
 	pos += velocity * deltatime;
 	rotationAngle += AngularVelocity * deltatime;
 

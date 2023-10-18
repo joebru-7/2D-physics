@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Asteroid.h" />
+    <ClInclude Include="Drawable.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="resource.h" />

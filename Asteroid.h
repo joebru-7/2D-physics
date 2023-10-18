@@ -2,23 +2,26 @@
 #include "Point.h"
 #include "sdl_wrappers.h"
 
-class Asteroid
+#include "Drawable.h"
+#include <cstddef>
+
+class Asteroid:public Drawable
 {
 public:
-	FPoint pos = { 100,100 };
+	//FPoint pos = { 100,100 };
 	FPoint velocity{ 0,0 }; //px/s
-	float rotationAngle{ 0 };//rad
+	//float rotationAngle{ 0 };//rad
 	float AngularVelocity{0};//rad/s
-	const FPoint graphics[8] = { {-8,-10},{-10,8},{-7,10},{10,10},{10,6},{2,6},{-4,-2},{-8,-10} };
 	FPoint worldpoints[8] = {};
-	
+	static const FPoint graphics[8];
 public:
 	Asteroid() = default;
 	Asteroid(FPoint pos, FPoint velocity, float rotationAngle, float AngularVelocity)
-		:pos(pos), velocity(velocity), rotationAngle(rotationAngle), AngularVelocity(AngularVelocity)
+		:Drawable(pos,rotationAngle,(int)std::size(worldpoints), offsetof(Asteroid,worldpoints)),
+		//pos(pos), rotationAngle(rotationAngle),
+		velocity(velocity), AngularVelocity(AngularVelocity)
 	{};
 
-	int Draw(Renderer& rend);
 	void Update(float deltatime);
 };
 

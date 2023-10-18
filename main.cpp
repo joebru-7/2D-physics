@@ -9,6 +9,8 @@
 
 int main(int argc, char* argv[])
 {
+	std::ios::sync_with_stdio(false);
+
 	SDL_context con{};
 	if (!con)
 	{
@@ -16,7 +18,7 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
-	std::cout << "SDL initialization succeeded!";
+	std::cout << "SDL initialization succeeded!\n";
 
 	Window window{};
 
@@ -27,7 +29,7 @@ int main(int argc, char* argv[])
 	Player player;
 
 	Uint64 now = SDL_GetPerformanceCounter(), last = SDL_GetPerformanceCounter();
-	float ticsPerSec = SDL_GetPerformanceFrequency();
+	float ticsPerSec = (float)SDL_GetPerformanceFrequency();
 
 	std::vector<Asteroid> asteroids{};
 
@@ -39,15 +41,13 @@ int main(int argc, char* argv[])
 	std::uniform_real_distribution angleDistribution{ 0.0,6.28 };
 	std::uniform_real_distribution speedDistribution { 1.f,20.f };
 
-
-
-	for (size_t i = 0; i < 1000; i++)
+	for (size_t i = 0; i < 500; i++)
 	{
-		asteroids.emplace_back(
+		asteroids.push_back(Asteroid(
 			FPoint{ (float)widhtDistribution(en),(float)heightDistribution(en) },
 			FromAngle(angleDistribution(en), speedDistribution(en)),
 			angleDistribution(en), speedDistribution(en) * (heightDistribution(en) % 2 == 0 ? 1 : -1)
-		);
+		));
 	}
 
 	while (true)
@@ -55,7 +55,11 @@ int main(int argc, char* argv[])
 		last = std::exchange(now, SDL_GetPerformanceCounter());
 
 		float deltatime = (now - last) / ticsPerSec;
-		std::cout << deltatime * 1000 << "\tms\t" << 1 / deltatime << "\tfps\t "<< asteroids.size() << " asteroids" << '\n';
+		std::cout <<
+			deltatime * 1000 << "\tms\t" <<
+			1 / deltatime << "\tfps\t " <<
+			asteroids.size() << " asteroids" <<
+			'\n';// << std::flush;
 
 		SDL_Event my_event;
 		while (SDL_PollEvent(&my_event))
