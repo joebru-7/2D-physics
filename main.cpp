@@ -6,8 +6,10 @@
 #include "sdl_wrappers.h"
 #include "player.h"
 #include "Asteroid.h"
+#include "line.h"
 
-
+//Renderer* debug_renderer;
+std::vector<FPoint> debug_points{};
 
 int main(int argc, char* argv[])
 {
@@ -39,20 +41,29 @@ int main(int argc, char* argv[])
 	std::default_random_engine en(rd());
 
 	std::uniform_int_distribution  heightDistribution{ 0,height };
-	std::uniform_int_distribution  widhtDistribution { 0,width };
+	std::uniform_int_distribution  widhtDistribution{ 0,width };
 	std::uniform_real_distribution angleDistribution{ 0.0,6.28 };
-	std::uniform_real_distribution speedDistribution { 1.f,20.f };
+	std::uniform_real_distribution speedDistribution{ 1.f,20.f };
 
 	for (size_t i = 0; i < 1; i++)
 	{
 		//TODO Make factory
 		asteroids.push_back(Asteroid(
 			FPoint{ (float)widhtDistribution(en),(float)heightDistribution(en) },
-			{0,0},//FromAngle(angleDistribution(en), speedDistribution(en)),
-			0,//angleDistribution(en), 
+			{ 0,0 },//FromAngle(angleDistribution(en), speedDistribution(en)),
+			(float)angleDistribution(en),
 			0//speedDistribution(en) * (heightDistribution(en) % 2 == 0 ? 1 : -1)
 		));
 	}
+
+	Line la{};
+	la.worldpoints[0] = { 200,200 };
+	la.worldpoints[1] = { 200,300 };
+	Line lb{};
+	lb.worldpoints[0] = { 450,200 };
+	lb.worldpoints[1] = { 400,300 };
+	
+
 
 	while (true)
 	{
@@ -90,11 +101,16 @@ int main(int argc, char* argv[])
 				case SDL_Scancode::SDL_SCANCODE_D:
 					player.rotationAngle += 0.1f;
 					break;
+				case SDL_Scancode::SDL_SCANCODE_SPACE:
+					player.setBreaking(my_event.key.type == SDL_KEYDOWN);
+					break;
 
 				default:
 					break;
 				}
-
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				lb.worldpoints[my_event.button.button == 1 ? 0:1] = { (float)my_event.button.x,(float)my_event.button.y };
 				break;
 			default:
 				break;
@@ -112,13 +128,23 @@ int main(int argc, char* argv[])
 		{
 			asteroid.Update(deltatime);
 			asteroid.Draw(renderer);
-			playerIntersectsAsteroid |= player.collides(asteroid);
+			playerIntersectsAsteroid |= player.collidesWith(asteroid);
 		}
-
-
 
 		renderer.SetDrawColor(playerIntersectsAsteroid ? Color::red : Color::green);
 		renderer.Draw(player);
+
+		renderer.SetDrawColor(lb.collidesWith(asteroids[0]) ? Color::red : Color::green);
+
+		//renderer.Draw(la);
+		renderer.Draw(lb);
+
+		renderer.SetDrawColor(Color::purple);
+		for (auto& point : debug_points)
+		{
+			renderer.DrawPoint(point);
+		}
+		debug_points.clear();
 
 		renderer.Preset();
 	}

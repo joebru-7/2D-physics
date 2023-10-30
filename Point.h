@@ -19,6 +19,7 @@ struct FPoint : SDL_FPoint
 	FPoint& operator+=(const FPoint& other);
 
 	FPoint operator*(const float)const;
+	FPoint& operator*=(const float);
 
 	FPoint operator-(const FPoint& other)const;
 	FPoint& operator-=(const FPoint& other);

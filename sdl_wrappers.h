@@ -94,9 +94,11 @@ enum class Color : uint32_t
 	white = computePackedColorValue(255, 255, 255),
 	red = 255 << 16,
 	green = 255 << 8,
-	blue = 255 << 0
+	blue = 255 << 0,
+	purple = computePackedColorValue(255, 0, 255),
 
 };
+
 
 struct Renderer
 {
@@ -147,6 +149,15 @@ struct Renderer
 		return SDL_SetRenderDrawColor(_renderer, r, g, b, a);
 	}
 
+	Color getDrawColor()
+	{
+		Uint8 r, g, b, a;
+		SDL_GetRenderDrawColor(_renderer, &r, &g, &b, &a);
+
+		return (Color)computePackedColorValue(r, g, b);
+	}
+		
+
 	int Clear()
 	{
 		return SDL_RenderClear(_renderer);
@@ -157,9 +168,19 @@ struct Renderer
 		return SDL_RenderDrawPoint(_renderer,x, y);
 	}
 
+	int DrawPoint(Point p)
+	{
+		return SDL_RenderDrawPoint(_renderer, p.x, p.y);
+	}
+
 	int DrawPoint(float x, float y)
 	{
 		return SDL_RenderDrawPointF(_renderer, x, y);
+	}
+
+	int DrawPoint(FPoint p)
+	{
+		return SDL_RenderDrawPointF(_renderer, p.x, p.y);
 	}
 
 	int DrawLines(const FPoint* points, int count)

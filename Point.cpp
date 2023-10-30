@@ -48,6 +48,13 @@ FPoint FPoint::operator*(const float f) const
 	return {x*f,y*f};
 }
 
+FPoint& FPoint::operator*=(const float f)
+{
+	x *= f;
+	y *= f;
+	return *this;
+}
+
 FPoint FPoint::operator-(const FPoint& b)const
 {
 	return { x - b.x,y - b.y };

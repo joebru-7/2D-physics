@@ -6,6 +6,8 @@ void Player::Update(float deltatime)
 {
 	if (isAccelerating)
 		velocity += FromAngle(rotationAngle, accelerationForce * deltatime);
+	if (isBreaking)
+		velocity *= .5f * deltatime;
 	pos += velocity * deltatime;
 
 	auto matrix = FMatrix(rotationAngle, pos);
@@ -19,4 +21,9 @@ void Player::Update(float deltatime)
 void Player::setAccelerating(bool b)
 {
 	isAccelerating = b;
+}
+
+void Player::setBreaking(bool b)
+{
+	isBreaking = b;
 }
