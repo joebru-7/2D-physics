@@ -26,5 +26,7 @@ public:
 	void Update(float deltatime);
 	void setAccelerating(bool b);
 	void setBreaking(bool b);
+	
+	friend class Bullet;
 };
 
