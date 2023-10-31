@@ -54,14 +54,15 @@ int main(int argc, char* argv[])
 	std::uniform_real_distribution angleDistribution{ 0.0,6.28 };
 	std::uniform_real_distribution speedDistribution{ 1.f,20.f };
 
-	for (size_t i = 0; i < 100; i++)
+	for (size_t i = 0; i < 1000; i++)
 	{
 		//TODO Make factory
 		asteroids.push_back(Asteroid(
 			FPoint{ (float)widhtDistribution(en),(float)heightDistribution(en) },
-			{ 0,0 },//FromAngle(angleDistribution(en), speedDistribution(en)),
+			FromAngle(angleDistribution(en), speedDistribution(en)),
 			(float)angleDistribution(en),
-			0//speedDistribution(en) * (heightDistribution(en) % 2 == 0 ? 1 : -1)
+			speedDistribution(en) * (heightDistribution(en) % 2 == 0 ? 1 : -1),
+			(float)angleDistribution(en)
 		));
 	}
 
@@ -127,34 +128,78 @@ int main(int argc, char* argv[])
 		bool playerIntersectsAsteroid = false;
 
 		renderer.SetDrawColor(Color::white);
-		for (auto& bullet : bullets)
 		{
-			bullet.Update(deltatime);
-			bullet.Draw(renderer);
+			auto last = bullets.end();
+			for (int i = (int)bullets.size() - 1; i >= 0; --i)
+			{
+				bullets[i].Update(deltatime);
+				auto bound = bullets[i].calculateBounds();
+				if (!SDL_HasIntersectionF(&bound, &windowBounds))
+				{
+					std::swap(bullets[i], *(--last));
+				}
+				bullets[i].Draw(renderer);
 
+			}
+			bullets.erase(last, bullets.end());
 		}
 
-		std::erase_if(bullets, 
-			[&](const Drawable& b) 
-			{
-				auto bound = b.calculateBounds(); 
-				return !SDL_HasIntersectionF(&bound, &windowBounds); 
-			});
 
 		renderer.SetDrawColor(Color::blue);
-		for (auto& asteroid : asteroids)
+		if(!asteroids.empty())
 		{
-			asteroid.Update(deltatime);
-			asteroid.Draw(renderer);
-			playerIntersectsAsteroid |= player.collidesWith(asteroid);
-		}
-
-		std::erase_if(asteroids,
-			[&](const Drawable& b)
+			auto last = asteroids.size();
+			for (int i = (int)asteroids.size() - 1; i >= 0; --i)
 			{
-				auto bound = b.calculateBounds();
-		return !SDL_HasIntersectionF(&bound, &windowBounds);
-			});
+				auto& asteroid = asteroids[i];
+				asteroid.Update(deltatime);
+
+				//inside window?
+				auto bound = asteroid.calculateBounds();
+				if (!SDL_HasIntersectionF(&bound, &windowBounds))
+				{
+					std::swap(asteroid, asteroids[--last]);
+					continue;
+				}
+
+				//shot at?
+				for (auto& bullet : bullets)
+				{
+					if (asteroid.collidesWith(bullet))
+					{
+						if (asteroid.scale < 0.2f)
+						{
+							std::swap(asteroid, asteroids[--last]);
+						}
+						else
+						{
+							auto nAsteroid = asteroid.Split();
+							nAsteroid.Update(deltatime);
+							nAsteroid.Draw(renderer);
+							asteroids.push_back(nAsteroid);
+							if(last != asteroids.size() - 1)
+							{
+								std::swap(nAsteroid, asteroids[last++]);
+							}
+							else
+							{
+								asteroids.push_back(nAsteroid);
+								last++;
+							}
+						}
+						goto nextAsteroid;
+					}
+				}
+
+				asteroid.Draw(renderer);
+				playerIntersectsAsteroid |= player.collidesWith(asteroid);
+			nextAsteroid:
+				;
+			}
+			auto it = asteroids.begin();
+			std::advance(it, last);
+			asteroids.erase(it, asteroids.end());
+		}
 
 		renderer.SetDrawColor(playerIntersectsAsteroid ? Color::red : Color::green);
 		renderer.Draw(player);

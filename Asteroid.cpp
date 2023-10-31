@@ -1,9 +1,15 @@
 #include "Asteroid.h"
 
 const FPoint Asteroid::graphics[asteroid_point_amount] =
-{ {7,8},{7,-8},{-9,-8},{-7,8},{7,8} };
-//{{-8,-10},{-10,8},{-7,10},{10,10},{10,6},{2,6},{-4,-2},{-8,-10}};
+//{ {7,8},{7,-8},{-9,-8},{-7,8},{7,8} };
+{{-8,-10},{-10,8},{-7,10},{10,10},{10,6},{2,6},{-4,-2},{-8,-10}};
 
+
+Asteroid Asteroid::Split()
+{
+	scale *= .5;
+	return Asteroid(pos, velocity, rotationAngle, AngularVelocity, scale);
+}
 
 void Asteroid::Update(float deltatime)
 {
@@ -11,7 +17,7 @@ void Asteroid::Update(float deltatime)
 	pos += velocity * deltatime;
 	rotationAngle += AngularVelocity * deltatime;
 
-	auto matrix = FMatrix(rotationAngle, pos);
+	auto matrix = FMatrix(rotationAngle, pos, scale);
 	for (int i = 0; i < count; i++)
 	{
 		worldpoints[i] = matrix * graphics[i];

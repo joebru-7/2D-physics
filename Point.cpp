@@ -84,6 +84,18 @@ FMatrix::FMatrix(float angle, FPoint pos)
 	};
 }
 
+FMatrix::FMatrix(float angle, FPoint pos, float scale)
+{
+	float s = sin(angle);
+	float c = cos(angle);
+	float x = pos.x;
+	float y = pos.y;
+	data = {
+		scale * c, scale * -s, x,
+		scale * s, scale *  c, y,
+		0,  0, 1
+	};
+}
 FPoint FMatrix::operator*(const FPoint point)const
 {
 	return {

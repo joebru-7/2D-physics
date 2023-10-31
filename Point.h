@@ -33,7 +33,9 @@ struct FMatrix
 {
 	std::array<float,9> data;
 	FMatrix() :data{} {};
+
 	FMatrix(float angle, FPoint pos);
+	FMatrix(float angle, FPoint pos, float scale);
 
 	//TODO optimize to Reference?
 	FPoint operator*(const FPoint point)const;
