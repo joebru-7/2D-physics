@@ -135,8 +135,8 @@ int main(int argc, char* argv[])
 		}
 
 	//asteroids
+		asteroids.push_back(spawner.Create());
 		renderer.SetDrawColor(Color::blue);
-		if(!asteroids.empty())
 		{
 			auto last = asteroids.size();
 			for (int i = (int)asteroids.size() - 1; i >= 0; --i)
