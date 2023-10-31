@@ -150,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Asteroid.h" />
+    <ClInclude Include="AsteroidSpawner.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="line.h" />

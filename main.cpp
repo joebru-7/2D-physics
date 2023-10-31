@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <random>
+
 #include <execution>
 
 #include "sdl_wrappers.h"
@@ -8,6 +8,7 @@
 #include "Asteroid.h"
 #include "line.h"
 #include "Bullet.h"
+#include "AsteroidSpawner.h"
 
 //Renderer* debug_renderer;
 std::vector<FPoint> debug_points{};
@@ -32,10 +33,10 @@ int main(int argc, char* argv[])
 	{
 		SDL_Rect intBounds;
 		SDL_GetDisplayBounds(0, &intBounds);
-		windowBounds.h = intBounds.h;
-		windowBounds.w = intBounds.w;
-		windowBounds.x = intBounds.x;
-		windowBounds.y = intBounds.y;
+		windowBounds.h = (float)intBounds.h;
+		windowBounds.w = (float)intBounds.w;
+		windowBounds.x = (float)intBounds.x;
+		windowBounds.y = (float)intBounds.y;
 	}
 	Renderer renderer{ window };
 
@@ -46,24 +47,11 @@ int main(int argc, char* argv[])
 
 	std::vector<Asteroid> asteroids{};
 
-	std::random_device rd;
-	std::default_random_engine en(rd());
-
-	std::uniform_int_distribution  heightDistribution{ 0,height };
-	std::uniform_int_distribution  widhtDistribution{ 0,width };
-	std::uniform_real_distribution angleDistribution{ 0.0,6.28 };
-	std::uniform_real_distribution speedDistribution{ 1.f,20.f };
+	AsteroidSpawner spawner = {height,width};
 
 	for (size_t i = 0; i < 1000; i++)
 	{
-		//TODO Make factory
-		asteroids.push_back(Asteroid(
-			FPoint{ (float)widhtDistribution(en),(float)heightDistribution(en) },
-			FromAngle(angleDistribution(en), speedDistribution(en)),
-			(float)angleDistribution(en),
-			speedDistribution(en) * (heightDistribution(en) % 2 == 0 ? 1 : -1),
-			(float)angleDistribution(en)
-		));
+		asteroids.push_back(spawner.Create());
 	}
 
 	std::vector<Bullet> bullets{};
@@ -79,7 +67,8 @@ int main(int argc, char* argv[])
 			asteroids.size() << " asteroids\t" <<
 			bullets.size() << " bullets\t" <<
 			'\n';// << std::flush;
-
+	
+	//keybord
 		SDL_Event my_event;
 		while (SDL_PollEvent(&my_event))
 		{
@@ -127,6 +116,7 @@ int main(int argc, char* argv[])
 		player.Update(deltatime);
 		bool playerIntersectsAsteroid = false;
 
+	//bullets
 		renderer.SetDrawColor(Color::white);
 		{
 			auto last = bullets.end();
@@ -144,7 +134,7 @@ int main(int argc, char* argv[])
 			bullets.erase(last, bullets.end());
 		}
 
-
+	//asteroids
 		renderer.SetDrawColor(Color::blue);
 		if(!asteroids.empty())
 		{
@@ -200,7 +190,8 @@ int main(int argc, char* argv[])
 			std::advance(it, last);
 			asteroids.erase(it, asteroids.end());
 		}
-
+	
+	//player
 		renderer.SetDrawColor(playerIntersectsAsteroid ? Color::red : Color::green);
 		renderer.Draw(player);
 

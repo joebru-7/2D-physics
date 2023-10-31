@@ -1,5 +1,8 @@
 #pragma once
 
+#undef SDL_FALLTHROUGH
+#define SDL_FALLTHROUGH [[fallthrough]]
+
 #include "sdl.h"
 #include<utility>
 #include "Point.h"
