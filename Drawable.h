@@ -1,9 +1,8 @@
 #pragma once
 #include "sdl_wrappers.h"
+#include "Rectangle.h"
 
-#include <vector>
-extern std::vector<FPoint> debug_points;
-
+constexpr bool useAABB = false;
 
 class Drawable
 {
@@ -21,12 +20,12 @@ protected:
 public:
 	//virtual ~Drawable() = default;
 
-	[[nodiscard]] SDL_FRect calculateBounds() const
+	[[nodiscard]] FRectangle calculateBounds() const
 	{
-		SDL_FRect ret{};
+		FRectangle ret{};
 		SDL_EncloseFPoints(reinterpret_cast<FPoint*>((std::byte*)this + OfsetOfworldpoints), count, nullptr, &ret);
 		return ret;
-	}
+	} 
 
 	int Draw(Renderer& rend)
 	{
@@ -35,9 +34,15 @@ public:
 
 	bool collidesWith(const Drawable& other)const 
 	{
+		//AABB
+		if constexpr (useAABB) 
+			if (!calculateBounds().isIntersecting(other.calculateBounds()))
+				return false;
+		
 		FPoint* myWorldpoints = reinterpret_cast<FPoint*>((std::byte*)this + OfsetOfworldpoints);
 		FPoint* otherWorldpoints = reinterpret_cast<FPoint*>((std::byte*)&other + other.OfsetOfworldpoints);
 
+		//Exact
 		for (auto i = 0; i < count-1; i++)
 		{
 			const FPoint& p1 = myWorldpoints[i];
@@ -54,7 +59,7 @@ public:
 				static_assert(std::numeric_limits<float>::is_iec559, "Please use IEEE754,denom might me 0");
 				const float td = t / denom;
 				const float ud = u / denom;
-				//FPoint intersection = p1
+
 				if (td >= 0 && td <= 1 && ud >= 0 && ud <= 1) 
 				{
 					return true;

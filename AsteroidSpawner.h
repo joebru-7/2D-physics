@@ -10,7 +10,9 @@ class AsteroidSpawner
 	std::uniform_int_distribution<int>  heightDistribution;
 	std::uniform_int_distribution<int>  widhtDistribution;
 	std::uniform_real_distribution<float> angleDistribution{ 0.0f,6.28f };
-	std::uniform_real_distribution<float>  speedDistribution{ 1.f,20.f };
+	std::uniform_real_distribution<float> speedDistribution{ 1.f,20.f };
+	std::uniform_real_distribution<float> SizeDistribution { 1.f,5.f };
+
 
 public:
 	AsteroidSpawner(int windowHeight, int windowWidth):heightDistribution{0,windowHeight}, widhtDistribution{0,windowWidth}
@@ -21,9 +23,9 @@ public:
 		return Asteroid(
 			FPoint{ (float)widhtDistribution(en),(float)heightDistribution(en) },
 			FromAngle(angleDistribution(en), speedDistribution(en)),
-			(float)angleDistribution(en),
+			angleDistribution(en),
 			speedDistribution(en) * (heightDistribution(en) % 2 == 0 ? 1 : -1),
-			(float)angleDistribution(en)
+			SizeDistribution(en)
 		);
 	}
 };

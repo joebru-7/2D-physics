@@ -8,7 +8,7 @@ const FPoint Asteroid::graphics[asteroid_point_amount] =
 Asteroid Asteroid::Split()
 {
 	scale *= .5;
-	return Asteroid(pos, velocity, rotationAngle, AngularVelocity, scale);
+	return Asteroid(pos, velocity*-1, rotationAngle, -AngularVelocity, scale);
 }
 
 void Asteroid::Update(float deltatime)
