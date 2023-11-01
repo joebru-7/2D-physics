@@ -2,8 +2,6 @@
 #include "sdl_wrappers.h"
 #include "Rectangle.h"
 
-constexpr bool useAABB = false;
-
 class Drawable
 {
 protected:
@@ -34,10 +32,8 @@ public:
 
 	bool collidesWith(const Drawable& other)const 
 	{
-		//AABB
-		if constexpr (useAABB) 
-			if (!calculateBounds().isIntersecting(other.calculateBounds()))
-				return false;
+		if (!calculateBounds().isIntersecting(other.calculateBounds()))
+			return false;
 		
 		FPoint* myWorldpoints = reinterpret_cast<FPoint*>((std::byte*)this + OfsetOfworldpoints);
 		FPoint* otherWorldpoints = reinterpret_cast<FPoint*>((std::byte*)&other + other.OfsetOfworldpoints);

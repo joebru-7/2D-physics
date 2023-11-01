@@ -1,8 +1,6 @@
 #include <iostream>
 #include <vector>
-
 #include <execution>
-
 
 #include "sdl_wrappers.h"
 #include "player.h"
@@ -11,13 +9,6 @@
 #include "Bullet.h"
 #include "AsteroidSpawner.h"
 #include "Rectangle.h"
-
-//Renderer* debug_renderer;
-std::vector<FPoint> debug_points{};
-
-
-int framecount = 0;
-float totaltime = 0;
 
 int main(int argc, char* argv[])
 {
@@ -76,16 +67,7 @@ int main(int argc, char* argv[])
 			1 / deltatime << "\tfps\t " <<
 			asteroids.size() << " asteroids\t" <<
 			bullets.size() << " bullets\t" <<
-			"is AABB enabeled? " << useAABB <<
 			'\n';// << std::flush;
-	
-		totaltime += deltatime;
-		framecount++;
-		if (framecount == 100)
-		{
-			std::cout << totaltime;
-			break;
-		}
 
 	//keybord
 		SDL_Event my_event;
