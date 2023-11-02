@@ -157,6 +157,7 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="QuadTree.h" />
     <ClInclude Include="Rectangle.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="sdl_wrappers.h" />

@@ -9,6 +9,7 @@
 #include "Bullet.h"
 #include "AsteroidSpawner.h"
 #include "Rectangle.h"
+#include "QuadTree.h"
 
 int main(int argc, char* argv[])
 {
@@ -50,6 +51,8 @@ int main(int argc, char* argv[])
 	{
 		asteroids.push_back(spawner.Create());
 	}
+
+	BulletQuadTree Qbullets{};
 
 	std::vector<Bullet> bullets{};
 	for (size_t i = 0; i < 1000; i++)
@@ -195,7 +198,6 @@ int main(int argc, char* argv[])
 	//player
 		renderer.SetDrawColor(playerIntersectsAsteroid ? Color::red : Color::green);
 		renderer.Draw(player);
-
 
 		renderer.Preset();
 	}
