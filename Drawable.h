@@ -18,7 +18,7 @@ protected:
 public:
 	//virtual ~Drawable() = default;
 
-	[[nodiscard]] FRectangle calculateBounds() const
+	[[nodiscard]] virtual FRectangle calculateBounds() const
 	{
 		FRectangle ret{};
 		SDL_EncloseFPoints(reinterpret_cast<FPoint*>((std::byte*)this + OfsetOfworldpoints), count, nullptr, &ret);

@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 		asteroids.push_back(spawner.Create());
 	}
 
-	BulletQuadTree Qbullets{};
+	BulletQuadTree Qbullets{ windowBounds };
 
 	std::vector<Bullet> bullets{};
 	for (size_t i = 0; i < 1000; i++)
@@ -123,6 +123,7 @@ int main(int argc, char* argv[])
 	//bullets
 		renderer.SetDrawColor(Color::white);
 		{
+			Qbullets.Clear();
 			auto last = bullets.end();
 			for (int i = (int)bullets.size() - 1; i >= 0; --i)
 			{
@@ -133,7 +134,7 @@ int main(int argc, char* argv[])
 					std::swap(bullets[i], *(--last));
 				}
 				bullets[i].Draw(renderer);
-
+				Qbullets.Insert(&bullets[i]);
 			}
 			bullets.erase(last, bullets.end());
 		}
@@ -157,9 +158,9 @@ int main(int argc, char* argv[])
 				}
 
 				//shot at?
-				for (auto& bullet : bullets)
+				for (auto bullet : Qbullets.getOverlaps(asteroid.calculateBounds()))
 				{
-					if (asteroid.collidesWith(bullet))
+					if (asteroid.collidesWith(*bullet))
 					{
 						if (asteroid.scale < 0.5f)
 						{
