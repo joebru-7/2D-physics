@@ -18,6 +18,11 @@ protected:
 public:
 	//virtual ~Drawable() = default;
 
+	[[nodiscard]] FPoint* getPointArray()
+	{
+		return reinterpret_cast<FPoint*>((std::byte*)this + OfsetOfworldpoints);
+	}
+
 	[[nodiscard]] virtual FRectangle calculateBounds() const
 	{
 		FRectangle ret{};
@@ -25,7 +30,7 @@ public:
 		return ret;
 	} 
 
-	int Draw(Renderer& rend)
+	int Draw(Renderer& rend) const
 	{
 		return rend.DrawLines(reinterpret_cast<FPoint*>((std::byte*)this + OfsetOfworldpoints), count);
 	}

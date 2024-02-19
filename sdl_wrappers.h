@@ -196,9 +196,15 @@ struct Renderer
 	}
 
 	template <typename T>
-	int Draw(T& obj)
+	int Draw(const T& obj)
 	{
 		return obj.Draw(*this);
+	}
+
+	template<>
+	int Draw<FPoint>(const FPoint& point)
+	{
+		return SDL_RenderDrawPointF(_renderer, point.x, point.y);
 	}
 
 };

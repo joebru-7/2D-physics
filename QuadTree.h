@@ -5,13 +5,14 @@
 constexpr int maxBullets = 2;
 constexpr int maxDepth = 8;
 
-class BulletQuadTree
+template <typename T>
+class QuadTree
 {
 	FRectangle extents;
 public:
-	BulletQuadTree(FRectangle extents) :extents(extents),root(extents,nullptr) {}
-	BulletQuadTree(const BulletQuadTree&) = delete;
-	BulletQuadTree(BulletQuadTree&&) = delete;
+	QuadTree(FRectangle extents) :extents(extents),root(extents,nullptr) {}
+	QuadTree(const QuadTree&) = delete;
+	QuadTree(QuadTree&&) = delete;
 
 private:
 	struct QuadNode
@@ -20,17 +21,16 @@ private:
 		FPoint midpoint;
 		std::unique_ptr<QuadNode> children[4]{};
 		QuadNode* parent;
-		std::vector<Bullet*> values;
+		std::vector<T> values;
 		int depth = 0;
 
 		QuadNode(FRectangle bounds, QuadNode* parent) :bounds{ bounds }, parent{ parent }
 		{
 			midpoint = { bounds.x + bounds.w * .5f , bounds.y + bounds.h * .5f };
-			if(parent)
-				depth = parent->depth + 1;
+			depth = parent ? parent->depth + 1 : 0;
 		}
 
-		void getOverlaps(FRectangle rect, std::vector<Bullet*>& dest)
+		void getOverlaps(FRectangle rect, std::vector<T>& dest)
 		{
 			if (!rect.isIntersecting(bounds))
 				return;
@@ -70,7 +70,7 @@ private:
 			return children[index].get();
 		}
 
-		void Insert(Bullet* b)
+		void Insert(T b)
 		{
 			if (depth == maxDepth)
 			{
@@ -103,9 +103,9 @@ private:
 
 
 private:
-	std::vector<Bullet*> overlaps{};
+	std::vector<T> overlaps{};
 public:
-	std::span<Bullet*> getOverlaps(FRectangle rect)
+	std::span<T> getOverlaps(FRectangle rect)
 	{
 		overlaps.clear();
 		root.getOverlaps(rect, overlaps);
@@ -117,7 +117,7 @@ public:
 		root.Clear();
 	}
 
-	void Insert(Bullet* t)
+	void Insert(T t)
 	{
 		return root.Insert(t);
 	}
