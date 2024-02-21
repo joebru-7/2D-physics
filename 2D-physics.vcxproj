@@ -141,12 +141,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Point.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Drawable.h" />
+    <ClInclude Include="Hit.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Point.h" />

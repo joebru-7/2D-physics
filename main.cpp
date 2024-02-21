@@ -7,6 +7,9 @@
 #include "Rectangle.h"
 #include "QuadTree.h"
 #include "Box.h"
+#include "Hit.h"
+
+Renderer* debugRenderer;
 
 int main(int argc, char* argv[])
 {
@@ -33,6 +36,7 @@ int main(int argc, char* argv[])
 		windowBounds = (FRectangle) intBounds;
 	}
 	Renderer renderer{ window };
+	debugRenderer = &renderer;
 
 
 	std::vector<Box> boxes{};
@@ -89,12 +93,29 @@ int main(int argc, char* argv[])
 
 		renderer.Draw(FPoint{ 100,100 });
 		
+
 		for (auto& box : boxes)
 		{
 			box.Update(deltatime);
 			renderer.Draw(box);
 		}
+		renderer.SetDrawColor(Color::green);
+		if(boxes.size() >0)
+		for (size_t i = 0; i < boxes.size() - 1; i++)
+		{
+			auto& box1 = boxes[i];
+			for (size_t ii = i + 1; ii < boxes.size(); ii++)
+			{
+				auto& box2 = boxes[ii];
+				Hit hit;
+				if (box1.collidesWith(box2,&hit))
+				{
+					renderer.Draw(hit.location);
+					// box1.pos;
+				}
 
+			}
+		}
 
 		renderer.Preset();
 

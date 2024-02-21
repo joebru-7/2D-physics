@@ -1,7 +1,6 @@
 #pragma once
 #include "Drawable.h"
-
-constexpr FPoint gravity{ 0,2 };//px/s/s
+#include "Constants.h"
 
 class Box : public Drawable
 {
