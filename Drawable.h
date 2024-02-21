@@ -6,6 +6,7 @@ class Drawable
 {
 protected:
 	int count;
+private:
 	//const FPoint* const graphics = nullptr;
 	int OfsetOfworldpoints;
 
@@ -18,9 +19,14 @@ protected:
 public:
 	//virtual ~Drawable() = default;
 
-	[[nodiscard]] FPoint* getPointArray()
+	[[nodiscard]] const FPoint* getPointArray() const
 	{
 		return reinterpret_cast<FPoint*>((std::byte*)this + OfsetOfworldpoints);
+	} 
+
+	[[nodiscard]] FPoint* getPointArray() 
+	{
+		return const_cast<FPoint*>(const_cast<const Drawable*>(this)->getPointArray());
 	}
 
 	[[nodiscard]] virtual FRectangle calculateBounds() const
@@ -35,7 +41,4 @@ public:
 		return rend.DrawLines(reinterpret_cast<FPoint*>((std::byte*)this + OfsetOfworldpoints), count);
 	}
 
-	bool collidesWith(const Drawable& other, struct Hit* hitResult = nullptr) const;
-	
-	
 };

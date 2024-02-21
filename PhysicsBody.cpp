@@ -1,15 +1,14 @@
-#include "Drawable.h"
+#include "PhysicsBody.h"
 #include "Hit.h"
 
 
-extern Renderer* debugRenderer;
-bool Drawable::collidesWith(const Drawable& other, Hit* hitResult)const
+bool PhysicsBody::collidesWith(const PhysicsBody& other, Hit* hitResult)const
 {
 	if (!calculateBounds().isIntersecting(other.calculateBounds()))
 		return false;
 
-	FPoint* myWorldpoints = reinterpret_cast<FPoint*>((std::byte*)this + OfsetOfworldpoints);
-	FPoint* otherWorldpoints = reinterpret_cast<FPoint*>((std::byte*)&other + other.OfsetOfworldpoints);
+	const FPoint* myWorldpoints = this->getPointArray();
+	const FPoint* otherWorldpoints = other.getPointArray();
 
 	//Exact
 	for (auto i = 0; i < count - 1; i++)

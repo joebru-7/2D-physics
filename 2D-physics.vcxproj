@@ -141,7 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Drawable.cpp" />
+    <ClCompile Include="PhysicsBody.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Point.cpp" />
   </ItemGroup>
@@ -152,6 +152,7 @@
     <ClInclude Include="Hit.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="PhysicsBody.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="Rectangle.h" />

@@ -4,9 +4,9 @@
 struct Hit
 {
 	FPoint location;
-	const Drawable* object1;
+	const PhysicsBody* object1;
 	const FPoint* segment1;
-	const Drawable* object2;
+	const PhysicsBody* object2;
 	const FPoint* segment2;
 
 };

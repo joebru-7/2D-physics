@@ -10,6 +10,7 @@
 #include "Hit.h"
 
 Renderer* debugRenderer;
+bool fixedDeltatime = false;
 
 int main(int argc, char* argv[])
 {
@@ -50,8 +51,16 @@ int main(int argc, char* argv[])
 		last = std::exchange(now, SDL_GetPerformanceCounter());
 		float deltatime = (now - last) / ticsPerSec;
 
-		deltatime = 0.001;
+		//clear screen with black
+		renderer.SetDrawColor(Color::black);
+		renderer.Clear();
 
+		renderer.SetDrawColor(fixedDeltatime ? Color::blue : Color::red);
+		renderer.Draw(FPoint{ 10,10 });
+		if (fixedDeltatime)
+		{
+			deltatime = 0.0001f;
+		}
 		//std::cout <<
 		//	deltatime * 1000 << "\tms\t" <<
 		//	1 / deltatime << "\tfps\t " <<
@@ -74,6 +83,12 @@ int main(int argc, char* argv[])
 				case SDL_Scancode::SDL_SCANCODE_ESCAPE:
 					goto quitGame;
 					break;
+				case SDL_Scancode::SDL_SCANCODE_F:
+					if (my_event.key.state == SDL_PRESSED)
+					{
+						fixedDeltatime = !fixedDeltatime;
+					}
+					break;
 				default:
 					break;
 				}
@@ -87,14 +102,8 @@ int main(int argc, char* argv[])
 			}
 		}
 
-		//clear screen with black
-		renderer.SetDrawColor(Color::black);
-		renderer.Clear();
-
 		renderer.SetDrawColor(Color::red);
-
 		renderer.Draw(FPoint{ 100,100 });
-		
 
 		for (auto& box : boxes)
 		{
