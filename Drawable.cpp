@@ -34,8 +34,8 @@ bool Drawable::collidesWith(const Drawable& other, Hit* hitResult)const
 				if (hitResult)
 				{
 					FPoint collisionPoint = {
-						p1.x + t * (p2.x - p1.x),
-						p1.y + t * (p2.y - p1.y),
+						p1.x + td * (p2.x - p1.x),
+						p1.y + td * (p2.y - p1.y),
 					};
 					*hitResult = { .location = collisionPoint,.object1 = this, .segment1 = &p1, .object2 = &other, .segment2 = &p3 };
 				}

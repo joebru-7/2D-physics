@@ -50,6 +50,8 @@ int main(int argc, char* argv[])
 		last = std::exchange(now, SDL_GetPerformanceCounter());
 		float deltatime = (now - last) / ticsPerSec;
 
+		deltatime = 0.001;
+
 		//std::cout <<
 		//	deltatime * 1000 << "\tms\t" <<
 		//	1 / deltatime << "\tfps\t " <<
