@@ -8,6 +8,7 @@
 #include "QuadTree.h"
 #include "Box.h"
 #include "Hit.h"
+#include "Wall.h"
 
 Renderer* debugRenderer;
 bool fixedDeltatime = false;
@@ -28,7 +29,7 @@ int main(int argc, char* argv[])
 
 	Window window{};
 
-	//auto [width, height] = window.getWidthandHeight();
+	auto [width, height] = window.getWidthandHeight();
 
 	FRectangle windowBounds{};
 	{
@@ -41,7 +42,7 @@ int main(int argc, char* argv[])
 
 
 	std::vector<Box> boxes{};
-
+	Wall bottomWall = Wall(FPoint{20,height-20.f},width-40.f,10.f);
 
 	Uint64 now = SDL_GetPerformanceCounter(), last = SDL_GetPerformanceCounter();
 	float ticsPerSec = (float)SDL_GetPerformanceFrequency();
@@ -102,9 +103,10 @@ int main(int argc, char* argv[])
 			}
 		}
 
-		renderer.SetDrawColor(Color::red);
-		renderer.Draw(FPoint{ 100,100 });
+		renderer.SetDrawColor(Color::gray);
+		renderer.Draw(bottomWall);
 
+		renderer.SetDrawColor(Color::red);
 		for (auto& box : boxes)
 		{
 			box.Update(deltatime);
@@ -115,6 +117,12 @@ int main(int argc, char* argv[])
 		for (size_t i = 0; i < boxes.size() - 1; i++)
 		{
 			auto& box1 = boxes[i];
+			Hit hit;
+			if (box1.collidesWith(bottomWall, &hit))
+			{
+				renderer.Draw(hit.location);
+				box1.velocity = box1.velocity * ((box1.mass - bottomWall.mass) / (box1.mass + bottomWall.mass));
+			}
 			for (size_t ii = i + 1; ii < boxes.size(); ii++)
 			{
 				auto& box2 = boxes[ii];

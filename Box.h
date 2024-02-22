@@ -12,7 +12,7 @@ public:
 
 
 	Box() : PhysicsBody((int)std::size(worldpoints), (int)offsetof(Box, worldpoints)) {}
-	Box(FPoint pos) : pos{ pos }, PhysicsBody((int)std::size(worldpoints), (int)offsetof(Box, worldpoints)) {}
+	Box(FPoint pos) : PhysicsBody(pos,(int)std::size(worldpoints), (int)offsetof(Box, worldpoints)) {}
 
 	void Update(float DeltaTime)
 	{

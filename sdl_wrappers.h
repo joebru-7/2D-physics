@@ -99,9 +99,9 @@ enum class Color : uint32_t
 	green = 255 << 8,
 	blue = 255 << 0,
 	purple = computePackedColorValue(255, 0, 255),
+	gray = computePackedColorValue(128,128,128),
 
 };
-
 
 struct Renderer
 {

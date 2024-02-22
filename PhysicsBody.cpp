@@ -1,6 +1,6 @@
 #include "PhysicsBody.h"
 #include "Hit.h"
-
+#include <cmath>
 
 bool PhysicsBody::collidesWith(const PhysicsBody& other, Hit* hitResult)const
 {
@@ -32,11 +32,17 @@ bool PhysicsBody::collidesWith(const PhysicsBody& other, Hit* hitResult)const
 			{
 				if (hitResult)
 				{
+					//multiple hits?
 					FPoint collisionPoint = {
 						p1.x + td * (p2.x - p1.x),
 						p1.y + td * (p2.y - p1.y),
 					};
-					*hitResult = { .location = collisionPoint,.object1 = this, .segment1 = &p1, .object2 = &other, .segment2 = &p3 };
+					float NormingVal = std::sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+					FPoint normal = {
+						-(p1.x - p2.x) * NormingVal,
+						 (p1.y - p2.y) * NormingVal,
+					};
+					*hitResult = { .location = collisionPoint,.hitNormal=normal,.object1 = this, .segment1 = &p1, .object2 = &other, .segment2 = &p3 };
 				}
 				return true;
 			}
@@ -44,4 +50,9 @@ bool PhysicsBody::collidesWith(const PhysicsBody& other, Hit* hitResult)const
 		}
 	}
 	return false;
+}
+
+void PhysicsBody::applyForce(float force, FPoint worldpos)
+{
+	
 }
