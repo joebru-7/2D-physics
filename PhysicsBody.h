@@ -7,9 +7,11 @@ public:
 	FPoint pos = { 100,100 };
 	FPoint velocity{ 0,0 }; //px/s
 	float rotationAngle{ 0 };//rad
-	float AngularVelocity{ 0 };//rad/s
+	float angularVelocity{ 1 };//rad/s
 	float scale{ 1 };
 	float mass = 1;
+	float rotationalInertia = 1;
+	bool isMovable = true;
 
 protected:
 	PhysicsBody() = default;
@@ -18,4 +20,5 @@ protected:
 public:
 	bool collidesWith(const PhysicsBody& other, struct Hit* hitResult)const;
 	void applyForce(float force, FPoint worldpos);
+	void handleCollision(PhysicsBody& other, Hit hit);
 };

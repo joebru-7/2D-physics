@@ -1,6 +1,7 @@
 #include "PhysicsBody.h"
 #include "Hit.h"
 #include <cmath>
+#include <limits>
 
 bool PhysicsBody::collidesWith(const PhysicsBody& other, Hit* hitResult)const
 {
@@ -37,7 +38,7 @@ bool PhysicsBody::collidesWith(const PhysicsBody& other, Hit* hitResult)const
 						p1.x + td * (p2.x - p1.x),
 						p1.y + td * (p2.y - p1.y),
 					};
-					float NormingVal = std::sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+					float NormingVal = 1/std::sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
 					FPoint normal = {
 						-(p1.x - p2.x) * NormingVal,
 						 (p1.y - p2.y) * NormingVal,
@@ -55,4 +56,44 @@ bool PhysicsBody::collidesWith(const PhysicsBody& other, Hit* hitResult)const
 void PhysicsBody::applyForce(float force, FPoint worldpos)
 {
 	
+}
+
+void PhysicsBody::handleCollision(PhysicsBody& other, Hit hit) {
+	// Resolve collision normal and calculate relative velocity
+	FPoint relativeVelocity = {
+		other.velocity.x - velocity.x,
+		other.velocity.y - velocity.y
+	};
+	
+	float velocityAlongNormal = relativeVelocity.x * hit.hitNormal.x + relativeVelocity.y * hit.hitNormal.y;
+
+	// Check if objects are moving away from each other
+	if (velocityAlongNormal > 0) return;
+
+	// Calculate impulse
+	float e = 1; // Coefficient of restitution (for fully elastic collision)
+	float j = -(1 + e) * velocityAlongNormal;
+	j /= 1 / mass + 1 / other.mass;
+
+	// Apply impulse to change velocities
+	FPoint impulse = { j * hit.hitNormal.x, j * hit.hitNormal.y };
+	velocity.x -= 1 / mass * impulse.x;
+	velocity.y -= 1 / mass * impulse.y;
+	if (other.isMovable)
+	{
+		other.velocity.x += 1 / other.mass * impulse.x;
+		other.velocity.y += 1 / other.mass * impulse.y;
+	}
+
+	// Calculate relative velocity at the contact point
+	FPoint relativeContactPosition = { pos.x - other.pos.x, pos.y - other.pos.y };
+	float contactVelocityPerpendicular = -relativeContactPosition.x * angularVelocity + relativeContactPosition.y * angularVelocity;
+
+	// Calculate impulse for angular velocity
+	float angularImpulse = contactVelocityPerpendicular / (1 / mass + 1 / other.mass);
+
+	// Apply impulse to change angular velocities
+	angularVelocity -= angularImpulse / rotationalInertia;
+	if (other.isMovable)
+		other.angularVelocity += angularImpulse / other.rotationalInertia;
 }

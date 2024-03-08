@@ -14,6 +14,7 @@ public:
 		worldpoints[2] = topcorner + FPoint{ width,height };
 		worldpoints[3] = topcorner + FPoint{ 0.f, height };
 		mass = 10000; //lots
+		isMovable = false;
 	}
 };
 

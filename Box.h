@@ -19,7 +19,7 @@ public:
 		constexpr int count = 5; // std::size(Asteroid{}.worldpoints);
 		velocity += gravity * DeltaTime;
 		pos += velocity * DeltaTime;
-		rotationAngle += AngularVelocity * DeltaTime;
+		rotationAngle += angularVelocity * DeltaTime;
 
 		auto matrix = FMatrix(rotationAngle, pos, scale);
 		for (int i = 0; i < count; i++)

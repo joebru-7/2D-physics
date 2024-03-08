@@ -97,6 +97,7 @@ int main(int argc, char* argv[])
 			//case SDL_MOUSEBUTTONUP:
 			case SDL_MOUSEBUTTONDOWN:
 				boxes.push_back({ FPoint{(float)my_event.button.x,(float)my_event.button.y} });
+				//boxes.back().rotationAngle
 				break;
 			default:
 				break;
@@ -121,7 +122,8 @@ int main(int argc, char* argv[])
 			if (box1.collidesWith(bottomWall, &hit))
 			{
 				renderer.Draw(hit.location);
-				box1.velocity = box1.velocity * ((box1.mass - bottomWall.mass) / (box1.mass + bottomWall.mass));
+				box1.handleCollision(bottomWall, hit);
+				//box1.velocity = box1.velocity * ((box1.mass - bottomWall.mass) / (box1.mass + bottomWall.mass));
 			}
 			for (size_t ii = i + 1; ii < boxes.size(); ii++)
 			{
@@ -129,6 +131,7 @@ int main(int argc, char* argv[])
 				Hit hit;
 				if (box1.collidesWith(box2,&hit))
 				{
+					box1.handleCollision(box2, hit);
 					renderer.Draw(hit.location);
 					// box1.pos;
 				}

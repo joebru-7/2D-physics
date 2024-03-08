@@ -29,7 +29,7 @@ public:
 		return const_cast<FPoint*>(const_cast<const Drawable*>(this)->getPointArray());
 	}
 
-	[[nodiscard]] virtual FRectangle calculateBounds() const
+	[[nodiscard]] FRectangle calculateBounds() const
 	{
 		FRectangle ret{};
 		SDL_EncloseFPoints(reinterpret_cast<FPoint*>((std::byte*)this + OfsetOfworldpoints), count, nullptr, &ret);
