@@ -14,12 +14,11 @@ public:
 	Box() : PhysicsBody((int)std::size(worldpoints), (int)offsetof(Box, worldpoints)) {}
 	Box(FPoint pos) : PhysicsBody(pos,(int)std::size(worldpoints), (int)offsetof(Box, worldpoints)) {}
 
-	void Update(float DeltaTime)
+	virtual void Update(float DeltaTime)
 	{
-		constexpr int count = 5; // std::size(Asteroid{}.worldpoints);
-		velocity += gravity * DeltaTime;
-		pos += velocity * DeltaTime;
-		rotationAngle += angularVelocity * DeltaTime;
+		PhysicsBody::Update(DeltaTime);
+
+		constexpr int count = std::size(Box::graphics);
 
 		auto matrix = FMatrix(rotationAngle, pos, scale);
 		for (int i = 0; i < count; i++)

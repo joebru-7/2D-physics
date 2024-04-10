@@ -21,4 +21,5 @@ public:
 	bool collidesWith(const PhysicsBody& other, struct Hit* hitResult)const;
 	void applyForce(float force, FPoint worldpos);
 	void handleCollision(PhysicsBody& other, Hit hit);
+	virtual void Update(float DeltaTime);
 };

@@ -41,4 +41,6 @@ public:
 		return rend.DrawLines(reinterpret_cast<FPoint*>((std::byte*)this + OfsetOfworldpoints), count);
 	}
 
+	virtual void Update(float DeltaTime) {}
+
 };

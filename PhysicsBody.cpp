@@ -2,6 +2,7 @@
 #include "Hit.h"
 #include <cmath>
 #include <limits>
+#include "Constants.h"
 
 bool PhysicsBody::collidesWith(const PhysicsBody& other, Hit* hitResult)const
 {
@@ -71,7 +72,7 @@ void PhysicsBody::handleCollision(PhysicsBody& other, Hit hit) {
 	if (velocityAlongNormal > 0) return;
 
 	// Calculate impulse
-	float e = 1; // Coefficient of restitution (for fully elastic collision)
+	float e = 0.9f; // Coefficient of restitution (for fully elastic collision)
 	float j = -(1 + e) * velocityAlongNormal;
 	j /= 1 / mass + 1 / other.mass;
 
@@ -96,4 +97,14 @@ void PhysicsBody::handleCollision(PhysicsBody& other, Hit hit) {
 	angularVelocity -= angularImpulse / rotationalInertia;
 	if (other.isMovable)
 		other.angularVelocity += angularImpulse / other.rotationalInertia;
+}
+
+void PhysicsBody::Update(float DeltaTime)
+{
+	if (!isMovable)
+		return;
+
+	velocity += gravity * DeltaTime;
+	pos += velocity * DeltaTime;
+	rotationAngle += angularVelocity * DeltaTime;
 }
