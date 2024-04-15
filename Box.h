@@ -18,7 +18,7 @@ public:
 	{
 		PhysicsBody::Update(DeltaTime);
 
-		constexpr int count = std::size(Box::graphics);
+		constexpr auto count = (int)std::size(Box::graphics);
 
 		auto matrix = FMatrix(rotationAngle, pos, scale);
 		for (int i = 0; i < count; i++)

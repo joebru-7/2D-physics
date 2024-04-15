@@ -9,6 +9,8 @@
 #include "Box.h"
 #include "Hit.h"
 #include "Wall.h"
+#include "Magnet.h"
+#include "ScopedColor.h"
 
 Renderer* debugRenderer;
 bool fixedDeltatime = false;
@@ -47,6 +49,10 @@ int main(int argc, char* argv[])
 
 	Uint64 now = SDL_GetPerformanceCounter(), last = SDL_GetPerformanceCounter();
 	float ticsPerSec = (float)SDL_GetPerformanceFrequency();
+
+	Magnet magnet;
+	magnet.pos = { 300,300 };
+	magnet.strength = 10;
 
 	while (true)
 	{
@@ -97,20 +103,29 @@ int main(int argc, char* argv[])
 				break;
 			//case SDL_MOUSEBUTTONUP:
 			case SDL_MOUSEBUTTONDOWN:
+				std::cout << (int)my_event.button.button;
 				boxes.push_back({ FPoint{(float)my_event.button.x,(float)my_event.button.y} });
-				//boxes.back().rotationAngle
+				boxes.back().angularVelocity = .01f;
 				break;
 			default:
 				break;
 			}
 		}
 
+
+
 		renderer.SetDrawColor(Color::gray);
 		renderer.Draw(bottomWall);
+
+		renderer.SetDrawColor(Color::white);
+		renderer.Draw(magnet.pos);
 
 		renderer.SetDrawColor(Color::red);
 		for (auto& box : boxes)
 		{
+			float distance2 = (magnet.pos-box.pos).lengthSqured();
+			float magneticforce = (magnet.strength*0.000'000'1f) / 4 * pi * (distance2);
+			box.applyForce(magneticforce*deltatime,(magnet.pos-box.pos)*(1.f/sqrt(distance2)));
 			box.Update(deltatime);
 			renderer.Draw(box);
 		}

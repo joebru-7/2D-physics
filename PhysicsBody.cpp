@@ -54,9 +54,9 @@ bool PhysicsBody::collidesWith(const PhysicsBody& other, Hit* hitResult)const
 	return false;
 }
 
-void PhysicsBody::applyForce(float force, FPoint worldpos)
+void PhysicsBody::applyForce(float force, FPoint direction)
 {
-	
+	velocity += (direction * force) * (1 / mass);
 }
 
 void PhysicsBody::handleCollision(PhysicsBody& other, Hit hit) {

@@ -151,12 +151,14 @@
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="Hit.h" />
     <ClInclude Include="line.h" />
+    <ClInclude Include="Magnet.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="PhysicsBody.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="Rectangle.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ScopedColor.h" />
     <ClInclude Include="sdl_wrappers.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>

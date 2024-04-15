@@ -24,10 +24,13 @@ struct FPoint : SDL_FPoint
 	FPoint operator-(const FPoint& other)const;
 	FPoint& operator-=(const FPoint& other);
 	explicit operator Point() const;
+
+	float length();
+	float lengthSqured();
 };
 
 FPoint FromAngle(float angle, float length = 1);
-
+float ToAngle(FPoint vector);
 
 struct FMatrix
 {

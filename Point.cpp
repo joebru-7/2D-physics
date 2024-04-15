@@ -1,5 +1,6 @@
 #include "Point.h"
 #include <cmath>
+#include "Constants.h"
 
 using std::sin, std::cos;
 
@@ -70,6 +71,16 @@ FPoint::operator Point() const
 	return Point{ (int)x,(int)y };
 }
 
+float FPoint::length()
+{
+	return std::sqrt(lengthSqured());
+}
+
+float FPoint::lengthSqured()
+{
+	return x * x + y * y;
+}
+
 
 FMatrix::FMatrix(float angle, FPoint pos)
 {
@@ -107,4 +118,11 @@ FPoint FMatrix::operator*(const FPoint point)const
 FPoint FromAngle(float angle, float length)
 {
 	return { length * sin(angle),length * -cos(angle) };
+}
+
+float ToAngle(FPoint vector)
+{
+	//fix full circle
+	// + pi ?
+	return std::atan(vector.x / vector.y) + ((vector.x < 0) ? pi : 0);
 }
