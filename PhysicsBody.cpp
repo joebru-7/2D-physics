@@ -6,6 +6,7 @@
 
 bool PhysicsBody::collidesWith(const PhysicsBody& other, Hit* hitResult)const
 {
+	//AABB
 	if (!calculateBounds().isIntersecting(other.calculateBounds()))
 		return false;
 
@@ -26,7 +27,7 @@ bool PhysicsBody::collidesWith(const PhysicsBody& other, Hit* hitResult)const
 			const float t = ((p1.x - p3.x) * (p3.y - p4.y) - (p1.y - p3.y) * (p3.x - p4.x));
 			const float u = ((p1.x - p3.x) * (p1.y - p2.y) - (p1.y - p3.y) * (p1.x - p2.x));
 
-			static_assert(std::numeric_limits<float>::is_iec559, "Please use IEEE754,denom might me 0");
+			static_assert(std::numeric_limits<float>::is_iec559, "Please use IEEE754 to have defined division by 0");
 			const float td = t / denom;
 			const float ud = u / denom;
 
@@ -34,7 +35,7 @@ bool PhysicsBody::collidesWith(const PhysicsBody& other, Hit* hitResult)const
 			{
 				if (hitResult)
 				{
-					//multiple hits?
+					//TODO: multiple hits?
 					FPoint collisionPoint = {
 						p1.x + td * (p2.x - p1.x),
 						p1.y + td * (p2.y - p1.y),

@@ -1,20 +1,13 @@
 #include <iostream>
 #include <vector>
-#include <execution>
-
 #include "sdl_wrappers.h"
-#include "line.h"
 #include "Rectangle.h"
-#include "QuadTree.h"
 #include "Box.h"
 #include "Hit.h"
 #include "Wall.h"
 #include "Magnet.h"
-#include "ScopedColor.h"
 
-Renderer* debugRenderer;
 bool fixedDeltatime = false;
-
 
 int main(int argc, char* argv[])
 {	
@@ -33,16 +26,9 @@ int main(int argc, char* argv[])
 	Window window{};
 
 	auto [width, height] = window.getWidthandHeight();
+	FRectangle windowBounds = (FRectangle) window.getBounds();
 
-	FRectangle windowBounds{};
-	{
-		Rectangle intBounds{};
-		SDL_GetDisplayBounds(0, &intBounds);
-		windowBounds = (FRectangle) intBounds;
-	}
 	Renderer renderer{ window };
-	debugRenderer = &renderer;
-
 
 	std::vector<Box> boxes{};
 	Wall bottomWall = Wall(FPoint{20,height-20.f},width-40.f,10.f);
@@ -52,7 +38,7 @@ int main(int argc, char* argv[])
 
 	Magnet magnet;
 	magnet.pos = { 300,300 };
-	magnet.strength = 10;
+	magnet.strength = 10000;
 
 	while (true)
 	{
@@ -103,16 +89,20 @@ int main(int argc, char* argv[])
 				break;
 			//case SDL_MOUSEBUTTONUP:
 			case SDL_MOUSEBUTTONDOWN:
-				std::cout << (int)my_event.button.button;
-				boxes.push_back({ FPoint{(float)my_event.button.x,(float)my_event.button.y} });
-				boxes.back().angularVelocity = .01f;
+				if ((int)my_event.button.button == 1) //left
+				{
+					boxes.push_back({ FPoint{(float)my_event.button.x,(float)my_event.button.y} });
+					boxes.back().angularVelocity = .01f;
+				}
+				else if ((int)my_event.button.button == 3) //right
+				{
+					magnet.pos = { (float)my_event.button.x, (float)my_event.button.y };
+				}
 				break;
 			default:
 				break;
 			}
 		}
-
-
 
 		renderer.SetDrawColor(Color::gray);
 		renderer.Draw(bottomWall);
@@ -121,14 +111,16 @@ int main(int argc, char* argv[])
 		renderer.Draw(magnet.pos);
 
 		renderer.SetDrawColor(Color::red);
+		std::erase_if(boxes, [&](const Box& box) {return !box.calculateBounds().isIntersecting(windowBounds); });
 		for (auto& box : boxes)
 		{
 			float distance2 = (magnet.pos-box.pos).lengthSqured();
-			float magneticforce = (magnet.strength*0.000'000'1f) / 4 * pi * (distance2);
+			float magneticforce = (magnet.strength) / (distance2);
 			box.applyForce(magneticforce*deltatime,(magnet.pos-box.pos)*(1.f/sqrt(distance2)));
 			box.Update(deltatime);
 			renderer.Draw(box);
 		}
+
 		renderer.SetDrawColor(Color::green);
 		if(boxes.size() >0)
 		for (size_t i = 0; i < boxes.size() - 1; i++)
@@ -139,7 +131,6 @@ int main(int argc, char* argv[])
 			{
 				renderer.Draw(hit.location);
 				box1.handleCollision(bottomWall, hit);
-				//box1.velocity = box1.velocity * ((box1.mass - bottomWall.mass) / (box1.mass + bottomWall.mass));
 			}
 			for (size_t ii = i + 1; ii < boxes.size(); ii++)
 			{
@@ -149,15 +140,12 @@ int main(int argc, char* argv[])
 				{
 					box1.handleCollision(box2, hit);
 					renderer.Draw(hit.location);
-					// box1.pos;
 				}
-
 			}
 		}
 
 		renderer.Preset();
-
-	}
+	}//main game loop
 
 quitGame:
 

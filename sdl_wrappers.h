@@ -6,6 +6,8 @@
 #include "sdl.h"
 #include<utility>
 #include "Point.h"
+#include "Rectangle.h"
+
 
 struct SDL_context
 {
@@ -73,6 +75,13 @@ struct Window
 		int widht, height;
 		SDL_GetWindowSize(_window, &widht, &height);
 		return Point{ widht,height };
+	}
+
+	auto getBounds()
+	{
+		Rectangle rect{};
+		SDL_GetDisplayBounds(0, &rect);
+		return rect;
 	}
 
 	~Window()
